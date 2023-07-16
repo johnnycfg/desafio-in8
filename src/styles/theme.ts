@@ -58,6 +58,11 @@ let theme = createTheme({
 
 theme = createTheme(theme, {
   components: {
+    MuiTypography: {
+      defaultProps: {
+        color: theme.palette.base[700],
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: ({ ownerState }) => ({
