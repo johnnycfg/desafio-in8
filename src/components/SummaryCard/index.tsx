@@ -16,8 +16,8 @@ export function SummaryCard({variant = 'grey', icon, title, amount}: SummaryCard
   return (
     <Stack 
       spacing="0.75rem" 
-      width="100%" 
-      maxWidth={352} 
+      width="100%"
+      maxWidth={378} 
       bgcolor={variant === 'grey' ? theme.palette.base[400] : theme.palette.product.green.dark } 
       p="1.5rem 2rem" 
       borderRadius="6px">

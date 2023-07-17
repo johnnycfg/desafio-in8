@@ -74,10 +74,43 @@ theme = createTheme(theme, {
                 backgroundColor: theme.palette.product.green.light,
               }
             }),
-        }),
-        
+          ...(ownerState.variant === 'outlined' &&
+          ownerState.color === 'primary' && {
+            fontWeight: 'bold',
+            color: theme.palette.product.green.main,
+            borderColor: theme.palette.product.green.main,
+            ":hover": {
+              color: theme.palette.product.green.light,
+              borderColor: theme.palette.product.green.light,
+            }
+          }),
+        }),        
       },
     },
+    MuiPaginationItem: {
+      styleOverrides: {
+        root: ({ ownerState }) => ({
+          ...(ownerState.color === 'primary' && {
+              backgroundColor: theme.palette.base[400],
+              color: theme.palette.base[600],
+              fontWeight: 'bold',
+              ':hover': {
+                backgroundColor: theme.palette.base[500],
+              },
+              '&.Mui-selected': {
+                backgroundColor: theme.palette.product.green.main
+              },
+              "&.Mui-selected:hover": {
+                backgroundColor: theme.palette.product.green.light,
+              },
+              '&.MuiPaginationItem-ellipsis': {
+                backgroundColor: 'transparent',
+              }
+            }),
+          
+        }),        
+      },
+    }
   },
 } as ThemeOptions)
 

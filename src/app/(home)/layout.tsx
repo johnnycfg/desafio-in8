@@ -1,7 +1,7 @@
 'use client'
 
 import { Header } from "@/components/header";
-import { Box, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 import { ReactNode } from "react";
 
 interface LayoutProps {
@@ -9,10 +9,8 @@ interface LayoutProps {
 }
 
 export default function Layout({children}: LayoutProps) {
-  const theme = useTheme()
-
   return (
-    <Box bgcolor={theme.palette.base[200]} height="100vh">
+    <Box>
       <Header />
       {children}
     </Box>
