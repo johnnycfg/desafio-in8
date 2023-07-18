@@ -1,7 +1,8 @@
-import { Box, FormControlLabel, Modal, Stack, TextField, Typography, useTheme } from "@mui/material";
-import { ArrowCircleUp, ArrowCircleDown, AttachMoneyOutlined, Search } from '@mui/icons-material'
+import { Box, Button, FormControlLabel, IconButton, Modal, Stack, TextField, Typography, useTheme } from "@mui/material";
+import { ArrowCircleUp, ArrowCircleDown, AttachMoneyOutlined, Search, Close } from '@mui/icons-material'
 import { Dispatch, SetStateAction, useState } from "react";
 import * as RadioGroup from '@radix-ui/react-radio-group';
+import { RadioGroupItem } from "./RadioGroupItem";
 
 
 interface NewTransactionModalProps {
@@ -22,7 +23,7 @@ export function NewTransactionModal({modalStatus, setModalStatus}: NewTransactio
     bgcolor: theme.palette.base[200],
     boxShadow: 24,
     p: '3rem',
-    borderRadius: '6px'
+    borderRadius: '6px',
   };
 
   const [value, setValue] = useState('female');
@@ -31,18 +32,26 @@ export function NewTransactionModal({modalStatus, setModalStatus}: NewTransactio
     setValue((event.target as HTMLInputElement).value);
   };
 
+  function handleCloseModal() {
+    setModalStatus(false)
+  }
+
 
   return (
     <Modal
       open={modalStatus}
-      onClose={setModalStatus}
+      onClose={handleCloseModal}
       aria-labelledby="modal new transaction"
       aria-describedby="modal to create a new transaction"
     >
-      <Box sx={style}>
+      <Box component="form" sx={style}>
         <Typography fontSize="1.5rem" fontWeight="bold">
           Nova transação
         </Typography>
+
+        <IconButton sx={{ position: 'absolute', top: '1rem', right: '1rem' }} onClick={handleCloseModal}>
+          <Close sx={{ color: theme.palette.base[500] }} />
+        </IconButton>
         
         <Stack spacing="1rem" mt="2rem">
           <TextField
@@ -84,34 +93,30 @@ export function NewTransactionModal({modalStatus, setModalStatus}: NewTransactio
           defaultValue="buy"
         >
           <Box display="flex" gap="1rem">
-            <Box 
-              sx={{
-                p: '1rem 1.5rem',
-                borderradius: '6px',
-                bgcolor: theme.palette.base[300],
-                color: theme.palette.base[600],
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.5rem',
-              }}
-            >
-              <RadioGroup.Item value="income" id="r1">
-                <RadioGroup.Indicator />
-              </RadioGroup.Item>
+            <RadioGroupItem value="income" id="r1" style={{flex: 1}}>
               <ArrowCircleUp sx={{color: theme.palette.product.green.light}}  />
-              <label htmlFor="r1">Entrada</label>
-            </Box>
-
-            <Box className="px-[20px] py-[18px] [&:has(input:checked)]:border-b-4 [&:has(input:checked)]:border-b-primary text-small-text [&:has(input:checked)]:text-primary font-bold">
-              <RadioGroup.Item value="outcome" id="r2">
-                <RadioGroup.Indicator />
-              </RadioGroup.Item>
-              <label htmlFor="r2">Saída</label>
-            </Box>
+              Entrada
+            </RadioGroupItem>
+            <RadioGroupItem value="outcome" id="r2" style={{flex: 1}}>
+              <ArrowCircleDown sx={{color: theme.palette.product.red.main}}  />
+              Saída
+            </RadioGroupItem>
           </Box>
         </RadioGroup.Root>
         </Stack>
+
+        <Button 
+          variant="contained" 
+          color="primary"
+          fullWidth
+          sx={{
+            mt: '2.5rem',
+            py: '1rem',
+            borderRadius: '6px'
+          }}
+        >
+          Cadastrar
+        </Button>
       </Box>
     </Modal>
   )
