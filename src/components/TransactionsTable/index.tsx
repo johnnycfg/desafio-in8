@@ -45,7 +45,7 @@ export function TransactionsTable({transactions}: TransactionsTableProps) {
               <TableCell 
                 sx={{
                   border: 0,
-                  color: transaction.type === 'income' ? theme.palette.product.green.main : theme.palette.product.red.main
+                  color: transaction.type === 'income' ? theme.palette.product.green.light : theme.palette.product.red.main
                 }
               }>
                 {transaction.type === 'outcome' && '- '} {currencyFormatter(transaction.price)}

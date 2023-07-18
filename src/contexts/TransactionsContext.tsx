@@ -19,9 +19,7 @@ interface CreateTransactionInputs {
 
 interface TransactionsContextType {
   transactions: Transactions[]
-  filteredTransactions: Transactions[] | null
   createTransaction: (data: CreateTransactionInputs) => void
-  searchTransactions: (search: string) => void
 }
 
 interface TransactionsProviderProps {
@@ -32,9 +30,6 @@ export const TransactionsContext = createContext({} as TransactionsContextType)
 
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
   const [transactions, setTransactions] = useState<Transactions[]>([])
-  const [filteredTransactions, setFilteredTransactions] = useState<Transactions[] | null>(null)
-
-  console.log('filteredTransactions state: ', filteredTransactions)
 
   useEffect(() => {
     const unparsedTransactions = localStorage.getItem('@transactions')
@@ -71,26 +66,9 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     [],
   )
 
-  function searchTransactions(search: string) {
-    const filtered = transactions.filter((transaction) => {
-      if (
-        transaction.description.toLowerCase().includes(search)
-        || transaction.category.toLowerCase().includes(search)
-        || transaction.price.toString().includes(search)
-        || new Date(transaction.createdAt).toLocaleDateString().includes(search)
-      ) return true
-
-      return false
-    })
-
-    console.log('filteredTransactions inside searchfn: ', filtered, filtered.length)
-
-    setFilteredTransactions(filtered.length > 0 ? filtered : null)
-  }
-
   return (
     <TransactionsContext.Provider
-      value={{ transactions, filteredTransactions, createTransaction, searchTransactions }}
+      value={{ transactions, createTransaction }}
     >
       {children}
     </TransactionsContext.Provider>

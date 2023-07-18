@@ -12,9 +12,20 @@ import { useContext, useState } from 'react'
 
 export default function Home() {
   const theme = useTheme()
-  const { transactions, filteredTransactions, searchTransactions } = useContext(TransactionsContext)
+  const { transactions, searchTransactions } = useContext(TransactionsContext)
   const summary = useSummary()
   const [search, setSearch] = useState('')
+
+  const filteredTransactions = transactions.filter((transaction) => {
+    if (
+      transaction.description.toLowerCase().includes(search)
+      || transaction.category.toLowerCase().includes(search)
+      || transaction.price.toString().includes(search)
+      || new Date(transaction.createdAt).toLocaleDateString().includes(search)
+    ) return true
+
+    return false
+  })
 
   return (
     <Box width="100%" maxWidth={1248} margin="0 auto" px="1.5rem" pb="2rem">
@@ -36,7 +47,7 @@ export default function Home() {
         />
       </Box>
 
-      <Box display="flex" gap="1rem" mt="4rem" mb="1.5rem">
+      <Box display="flex" justifyContent="flex-end" gap="1rem" mt="4rem" mb="1.5rem">
         <TextField 
           placeholder='Busque uma transação' 
           sx={{
@@ -45,30 +56,19 @@ export default function Home() {
             '& .MuiInputBase-input': {
               color: theme.palette.base[600],
             },
+            maxWidth: '300px',
           }}
           fullWidth
           value={search}
           onChange={(event) => setSearch(event.target.value.toLowerCase())}
         />
-
-        <Button 
-          variant='outlined' 
-          color="primary" 
-          startIcon={<Search />}
-          sx={{
-            px: '2rem'
-          }}
-          onClick={() => searchTransactions(search)}
-        >
-          Buscar
-        </Button>
       </Box>
 
       {transactions.length < 1 ? (
         <Typography textAlign="center">
           Você ainda não cadastrou nenhuma transação!
         </Typography>
-      ) : !filteredTransactions ? (
+      ) : filteredTransactions.length < 1 ? (
         <Typography textAlign="center">
           Nenhuma transação encontrada!
         </Typography>
@@ -78,7 +78,6 @@ export default function Home() {
           <Pagination count={10} color="primary" shape='rounded' />
         </Stack>
       )}
-
     </Box>
   )
 }
