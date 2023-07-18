@@ -1,4 +1,10 @@
-import { ReactNode, createContext, useCallback, useEffect, useState } from 'react'
+import {
+  ReactNode,
+  createContext,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 interface Transactions {
@@ -35,7 +41,9 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     const unparsedTransactions = localStorage.getItem('@transactions')
 
     if (unparsedTransactions) {
-      const parsedTransactions = JSON.parse(unparsedTransactions) as Transactions[]
+      const parsedTransactions = JSON.parse(
+        unparsedTransactions,
+      ) as Transactions[]
 
       setTransactions(parsedTransactions)
     }
@@ -47,29 +55,23 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     }
   }, [transactions])
 
+  const createTransaction = useCallback((data: CreateTransactionInputs) => {
+    const { description, price, category, type } = data
 
-  const createTransaction = useCallback(
-    (data: CreateTransactionInputs) => {
-      const { description, price, category, type } = data
+    const transaction = {
+      id: uuidv4(),
+      description,
+      price,
+      category,
+      type,
+      createdAt: new Date().toString(),
+    }
 
-      const transaction = {
-        id: uuidv4(),
-        description, 
-        price, 
-        category, 
-        type, 
-        createdAt: new Date().toString()
-      }
-
-      setTransactions((state) => [transaction, ...state])
-    },
-    [],
-  )
+    setTransactions((state) => [transaction, ...state])
+  }, [])
 
   return (
-    <TransactionsContext.Provider
-      value={{ transactions, createTransaction }}
-    >
+    <TransactionsContext.Provider value={{ transactions, createTransaction }}>
       {children}
     </TransactionsContext.Provider>
   )

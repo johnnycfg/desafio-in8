@@ -5,8 +5,8 @@
  */
 export function currencyFormatter(
   value: number,
-  locale: string = 'pt-BR',
-  currency: string = 'BRL',
+  locale = 'pt-BR',
+  currency = 'BRL',
 ) {
   const formatter = new Intl.NumberFormat(locale, {
     style: 'currency',

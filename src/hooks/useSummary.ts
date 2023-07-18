@@ -2,7 +2,7 @@ import { TransactionsContext } from '@/contexts/TransactionsContext'
 import { useContext, useMemo } from 'react'
 
 export function useSummary() {
-  const {transactions} = useContext(TransactionsContext)
+  const { transactions } = useContext(TransactionsContext)
 
   const summary = useMemo(() => {
     return transactions.reduce(

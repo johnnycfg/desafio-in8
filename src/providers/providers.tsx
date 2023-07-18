@@ -1,11 +1,10 @@
 'use client'
 
-import { ReactNode } from "react"
+import { ReactNode } from 'react'
 import { CssBaseline, GlobalStyles, ThemeProvider } from '@mui/material'
-import theme from "@/styles/theme"
-import { globalCss } from "@/styles/global"
-import { TransactionsProvider } from "@/contexts/TransactionsContext"
-
+import theme from '@/styles/theme'
+import { globalCss } from '@/styles/global'
+import { TransactionsProvider } from '@/contexts/TransactionsContext'
 
 interface ProvidersProps {
   children: ReactNode
@@ -13,15 +12,12 @@ interface ProvidersProps {
 
 const global = globalCss(theme)
 
-export function Providers({children}: ProvidersProps) {
+export function Providers({ children }: ProvidersProps) {
   return (
     <ThemeProvider theme={theme}>
-      <TransactionsProvider>
-        {children}
-      </TransactionsProvider>
-      <CssBaseline  />
+      <TransactionsProvider>{children}</TransactionsProvider>
+      <CssBaseline />
       <GlobalStyles styles={global} />
     </ThemeProvider>
-
   )
 }
