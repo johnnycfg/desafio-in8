@@ -1,9 +1,22 @@
 import { Box, Button, FormControlLabel, IconButton, Modal, Stack, TextField, Typography, useTheme } from "@mui/material";
 import { ArrowCircleUp, ArrowCircleDown, AttachMoneyOutlined, Search, Close } from '@mui/icons-material'
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { RadioGroupItem } from "./RadioGroupItem";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from "zod";
+import { TransactionsContext } from "@/contexts/TransactionsContext";
 
+
+const newTransactionFormSchema = z.object({
+  description: z.string(),
+  type: z.enum(['income', 'outcome']),
+  category: z.string(),
+  price: z.number()
+})
+
+type NewTransactionFormInputs = z.infer<typeof newTransactionFormSchema>
 
 interface NewTransactionModalProps {
   modalStatus: boolean
@@ -12,6 +25,22 @@ interface NewTransactionModalProps {
 
 export function NewTransactionModal({modalStatus, setModalStatus}: NewTransactionModalProps) {
   const theme = useTheme()
+  const { createTransaction } = useContext(TransactionsContext)
+
+  const {register, handleSubmit, control, formState: {errors}, reset} = useForm<NewTransactionFormInputs>({
+    resolver: zodResolver(newTransactionFormSchema),
+    defaultValues: {
+      type: 'income',
+    }
+  })
+
+  console.log(errors)
+
+
+  function handleCreateNewTransaction(data: NewTransactionFormInputs) {
+    createTransaction(data)
+    handleCloseModal()
+  }
 
   const style = {
     position: 'absolute' as 'absolute',
@@ -26,14 +55,9 @@ export function NewTransactionModal({modalStatus, setModalStatus}: NewTransactio
     borderRadius: '6px',
   };
 
-  const [value, setValue] = useState('female');
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue((event.target as HTMLInputElement).value);
-  };
-
   function handleCloseModal() {
     setModalStatus(false)
+    reset()
   }
 
 
@@ -44,7 +68,7 @@ export function NewTransactionModal({modalStatus, setModalStatus}: NewTransactio
       aria-labelledby="modal new transaction"
       aria-describedby="modal to create a new transaction"
     >
-      <Box component="form" sx={style}>
+      <Box component="form" sx={style} onSubmit={handleSubmit(handleCreateNewTransaction)}>
         <Typography fontSize="1.5rem" fontWeight="bold">
           Nova transação
         </Typography>
@@ -64,6 +88,7 @@ export function NewTransactionModal({modalStatus, setModalStatus}: NewTransactio
               },
             }}
             fullWidth
+            {...register('description')}
           />
             <TextField
             placeholder='Preço' 
@@ -75,6 +100,7 @@ export function NewTransactionModal({modalStatus, setModalStatus}: NewTransactio
               },
             }}
             fullWidth
+            {...register('price', {valueAsNumber: true})}
           />
             <TextField
             placeholder='Categoria' 
@@ -86,22 +112,30 @@ export function NewTransactionModal({modalStatus, setModalStatus}: NewTransactio
               },
             }}
             fullWidth
+            {...register('category')}
           />
 
-        <RadioGroup.Root
-          defaultValue="income"
-        >
-          <Box display="flex" gap="1rem" sx={{ 'input[type=radio]': { width: '0 !important', height: '0 !important' } }}>
-            <RadioGroupItem value="income" id="r1" style={{flex: 1}}>
-              <ArrowCircleUp sx={{color: theme.palette.product.green.light}}  />
-              Entrada
-            </RadioGroupItem>
-            <RadioGroupItem value="outcome" id="r2" style={{flex: 1}}>
-              <ArrowCircleDown sx={{color: theme.palette.product.red.main}}  />
-              Saída
-            </RadioGroupItem>
-          </Box>
-        </RadioGroup.Root>
+          <Controller 
+            name="type"
+            control={control}
+            render={({field}) => (
+              <RadioGroup.Root
+                value={field.value}
+                onValueChange={(value) => field.onChange(value)}
+              >
+                <Box display="flex" gap="1rem" sx={{ 'input[type=radio]': { width: '0 !important', height: '0 !important' } }}>
+                  <RadioGroupItem value="income" id="r1" style={{flex: 1}}>
+                    <ArrowCircleUp sx={{color: theme.palette.product.green.light}}  />
+                    Entrada
+                  </RadioGroupItem>
+                  <RadioGroupItem value="outcome" id="r2" style={{flex: 1}}>
+                    <ArrowCircleDown sx={{color: theme.palette.product.red.main}}  />
+                    Saída
+                  </RadioGroupItem>
+                </Box>
+              </RadioGroup.Root>
+            )}
+          />
         </Stack>
 
         <Button 
@@ -113,6 +147,7 @@ export function NewTransactionModal({modalStatus, setModalStatus}: NewTransactio
             py: '1rem',
             borderRadius: '6px'
           }}
+          type="submit"
         >
           Cadastrar
         </Button>
