@@ -89,10 +89,9 @@ export function NewTransactionModal({modalStatus, setModalStatus}: NewTransactio
           />
 
         <RadioGroup.Root
-          className="flex w-fit rounded-t-xl bg-white px-3"
-          defaultValue="buy"
+          defaultValue="income"
         >
-          <Box display="flex" gap="1rem">
+          <Box display="flex" gap="1rem" sx={{ 'input[type=radio]': { width: '0 !important', height: '0 !important' } }}>
             <RadioGroupItem value="income" id="r1" style={{flex: 1}}>
               <ArrowCircleUp sx={{color: theme.palette.product.green.light}}  />
               Entrada
