@@ -1,12 +1,15 @@
 'use client'
 
+import { NewTransactionModal } from '@/components/NewTransactionModal'
 import { SummaryCard } from '@/components/SummaryCard'
 import { TransactionsTable } from '@/components/TransactionsTable'
 import { ArrowCircleUp, ArrowCircleDown, AttachMoneyOutlined, Search } from '@mui/icons-material'
 import { Box, Button, Pagination, Stack, TextField, useTheme } from '@mui/material'
+import { useState } from 'react'
 
 export default function Home() {
   const theme = useTheme()
+  const [newTransactionModalStatus, setNewTransactionModalStatus] = useState(true)
 
   return (
     <Box width="100%" maxWidth={1248} margin="0 auto" px="1.5rem" pb="2rem">
@@ -35,7 +38,7 @@ export default function Home() {
             bgcolor: theme.palette.base[100],
             borderRadius: '6px',
             '& .MuiInputBase-input': {
-              color: theme.palette.base[500],
+              color: theme.palette.base[600],
             },
           }}
           fullWidth
@@ -57,6 +60,8 @@ export default function Home() {
         <TransactionsTable />
         <Pagination count={10} color="primary" shape='rounded' />
       </Stack>
+
+      <NewTransactionModal modalStatus={newTransactionModalStatus} setModalStatus={setNewTransactionModalStatus} />
     </Box>
   )
 }
