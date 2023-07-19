@@ -19,10 +19,12 @@ import { z } from 'zod'
 import { TransactionsContext } from '@/contexts/TransactionsContext'
 
 const newTransactionFormSchema = z.object({
-  description: z.string(),
+  description: z.string().min(1, 'Informe uma descrição'),
   type: z.enum(['income', 'outcome']),
-  category: z.string(),
-  price: z.number(),
+  category: z.string().min(1, 'Informe uma categoria'),
+  price: z
+    .number({ invalid_type_error: 'Informe um valor válido' })
+    .positive('Informe um valor positivo mesmo que seja uma saída'),
 })
 
 type NewTransactionFormInputs = z.infer<typeof newTransactionFormSchema>
@@ -103,78 +105,108 @@ export function NewTransactionModal({
         </IconButton>
 
         <Stack spacing="1rem" mt="2rem">
-          <TextField
-            placeholder="Descrição"
-            sx={{
-              bgcolor: theme.palette.base[100],
-              borderRadius: '6px',
-              '& .MuiInputBase-input': {
-                color: theme.palette.base[600],
-              },
-            }}
-            fullWidth
-            {...register('description')}
-          />
-          <TextField
-            placeholder="Preço"
-            sx={{
-              bgcolor: theme.palette.base[100],
-              borderRadius: '6px',
-              '& .MuiInputBase-input': {
-                color: theme.palette.base[600],
-              },
-            }}
-            fullWidth
-            {...register('price', { valueAsNumber: true })}
-          />
-          <TextField
-            placeholder="Categoria"
-            sx={{
-              bgcolor: theme.palette.base[100],
-              borderRadius: '6px',
-              '& .MuiInputBase-input': {
-                color: theme.palette.base[600],
-              },
-            }}
-            fullWidth
-            {...register('category')}
-          />
-
-          <Controller
-            name="type"
-            control={control}
-            render={({ field }) => (
-              <RadioGroup.Root
-                value={field.value}
-                onValueChange={(value) => field.onChange(value)}
-              >
-                <Box
-                  display="flex"
-                  flexDirection={smDown ? 'column' : 'row'}
-                  gap="1rem"
-                  sx={{
-                    'input[type=radio]': {
-                      width: '0 !important',
-                      height: '0 !important',
-                    },
-                  }}
-                >
-                  <RadioGroupItem value="income" id="r1" style={{ flex: 1 }}>
-                    <ArrowCircleUp
-                      sx={{ color: theme.palette.product.green.light }}
-                    />
-                    Entrada
-                  </RadioGroupItem>
-                  <RadioGroupItem value="outcome" id="r2" style={{ flex: 1 }}>
-                    <ArrowCircleDown
-                      sx={{ color: theme.palette.product.red.main }}
-                    />
-                    Saída
-                  </RadioGroupItem>
-                </Box>
-              </RadioGroup.Root>
+          <Stack spacing="0.5rem">
+            <TextField
+              placeholder="Descrição"
+              sx={{
+                bgcolor: theme.palette.base[100],
+                borderRadius: '6px',
+                '& .MuiInputBase-input': {
+                  color: theme.palette.base[600],
+                },
+              }}
+              fullWidth
+              {...register('description')}
+            />
+            {errors.description?.message && (
+              <Typography color={theme.palette.product.red.main}>
+                {errors.description?.message}
+              </Typography>
             )}
-          />
+          </Stack>
+
+          <Stack spacing="0.5rem">
+            <TextField
+              placeholder="Preço"
+              sx={{
+                bgcolor: theme.palette.base[100],
+                borderRadius: '6px',
+                '& .MuiInputBase-input': {
+                  color: theme.palette.base[600],
+                },
+              }}
+              fullWidth
+              {...register('price', { valueAsNumber: true })}
+            />
+            {errors.price?.message && (
+              <Typography color={theme.palette.product.red.main}>
+                {errors.price?.message}
+              </Typography>
+            )}
+          </Stack>
+
+          <Stack spacing="0.5rem">
+            <TextField
+              placeholder="Categoria"
+              sx={{
+                bgcolor: theme.palette.base[100],
+                borderRadius: '6px',
+                '& .MuiInputBase-input': {
+                  color: theme.palette.base[600],
+                },
+              }}
+              fullWidth
+              {...register('category')}
+            />
+            {errors.category?.message && (
+              <Typography color={theme.palette.product.red.main}>
+                {errors.category?.message}
+              </Typography>
+            )}
+          </Stack>
+
+          <Stack spacing="0.5rem">
+            <Controller
+              name="type"
+              control={control}
+              render={({ field }) => (
+                <RadioGroup.Root
+                  value={field.value}
+                  onValueChange={(value) => field.onChange(value)}
+                >
+                  <Box
+                    display="flex"
+                    flexDirection={smDown ? 'column' : 'row'}
+                    gap="1rem"
+                    sx={{
+                      'input[type=radio]': {
+                        width: '0 !important',
+                        height: '0 !important',
+                      },
+                    }}
+                  >
+                    <RadioGroupItem value="income" id="r1" style={{ flex: 1 }}>
+                      <ArrowCircleUp
+                        sx={{ color: theme.palette.product.green.light }}
+                      />
+                      Entrada
+                    </RadioGroupItem>
+                    <RadioGroupItem value="outcome" id="r2" style={{ flex: 1 }}>
+                      <ArrowCircleDown
+                        sx={{ color: theme.palette.product.red.main }}
+                      />
+                      Saída
+                    </RadioGroupItem>
+                  </Box>
+                </RadioGroup.Root>
+              )}
+            />
+            {errors.type?.message && (
+              <Typography color={theme.palette.product.red.main}>
+                {errors.type?.message}
+              </Typography>
+            )}
+          </Stack>
         </Stack>
 
         <Button
