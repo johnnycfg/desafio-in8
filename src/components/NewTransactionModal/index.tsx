@@ -55,8 +55,6 @@ export function NewTransactionModal({
     },
   })
 
-  console.log(errors)
-
   function handleCreateNewTransaction(data: NewTransactionFormInputs) {
     createTransaction(data)
     handleCloseModal()
