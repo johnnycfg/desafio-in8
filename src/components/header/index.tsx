@@ -1,10 +1,11 @@
-import { Box, Button, useTheme } from '@mui/material'
+import { Box, Button, useMediaQuery, useTheme } from '@mui/material'
 import Image from 'next/image'
 import { NewTransactionModal } from '../NewTransactionModal'
 import { useState } from 'react'
 
 export function Header() {
   const theme = useTheme()
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'))
   const [newTransactionModalStatus, setNewTransactionModalStatus] =
     useState(false)
 
@@ -23,11 +24,20 @@ export function Header() {
         margin="0 auto"
         px="1.5rem"
       >
-        <Image src="/logo.svg" width={173} height={42} alt="Logo" priority />
+        <Image
+          src="/logo.svg"
+          width={smDown ? 117 : 173}
+          height={smDown ? 25 : 42}
+          alt="Logo"
+          priority
+        />
         <Button
           variant="contained"
           color="primary"
           onClick={handleOpenNewTransactionModal}
+          sx={{
+            fontSize: smDown ? '0.875rem' : 'initial',
+          }}
         >
           Nova transação
         </Button>

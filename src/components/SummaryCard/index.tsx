@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, useTheme } from '@mui/material'
+import { Box, Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
 import { ReactNode } from 'react'
 import { currencyFormatter } from '@/utils/currencyFormatter'
 
@@ -16,11 +16,13 @@ export function SummaryCard({
   amount,
 }: SummaryCardProps) {
   const theme = useTheme()
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
     <Stack
       spacing="0.75rem"
       width="100%"
+      minWidth={smDown ? '282px' : 'initial'}
       maxWidth={378}
       bgcolor={
         variant === 'grey'

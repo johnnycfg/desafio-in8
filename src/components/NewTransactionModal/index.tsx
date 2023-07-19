@@ -6,6 +6,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useMediaQuery,
   useTheme,
 } from '@mui/material'
 import { ArrowCircleUp, ArrowCircleDown, Close } from '@mui/icons-material'
@@ -36,6 +37,7 @@ export function NewTransactionModal({
   setModalStatus,
 }: NewTransactionModalProps) {
   const theme = useTheme()
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'))
   const { createTransaction } = useContext(TransactionsContext)
 
   const {
@@ -63,8 +65,9 @@ export function NewTransactionModal({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '100%',
-    maxWidth: 528,
+    width: smDown ? '100vw' : '100%',
+    maxWidth: smDown ? '100vw' : 528,
+    height: smDown ? '100vh' : 'initial',
     bgcolor: theme.palette.base[200],
     boxShadow: 24,
     p: '3rem',
@@ -147,6 +150,7 @@ export function NewTransactionModal({
               >
                 <Box
                   display="flex"
+                  flexDirection={smDown ? 'column' : 'row'}
                   gap="1rem"
                   sx={{
                     'input[type=radio]': {

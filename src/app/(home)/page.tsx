@@ -4,6 +4,7 @@ import { SummaryCard } from '@/components/SummaryCard'
 import { TransactionsTable } from '@/components/TransactionsTable'
 import { TransactionsContext } from '@/contexts/TransactionsContext'
 import { useSummary } from '@/hooks/useSummary'
+import { paginateArray } from '@/utils/paginateArray'
 import {
   ArrowCircleUp,
   ArrowCircleDown,
@@ -15,15 +16,31 @@ import {
   Stack,
   TextField,
   Typography,
+  useMediaQuery,
   useTheme,
 } from '@mui/material'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+
+interface Transactions {
+  id: string
+  description: string
+  type: 'income' | 'outcome'
+  category: string
+  price: number
+  createdAt: string
+}
 
 export default function Home() {
   const theme = useTheme()
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'))
   const { transactions } = useContext(TransactionsContext)
   const summary = useSummary()
   const [search, setSearch] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search])
 
   const filteredTransactions = transactions.filter((transaction) => {
     if (
@@ -37,9 +54,26 @@ export default function Home() {
     return false
   })
 
+  const itemsPerPage = 5
+  const transactionsAmount = Math.ceil(
+    (filteredTransactions.length || transactions.length) / itemsPerPage,
+  )
+
+  const paginatedTransactions = paginateArray<Transactions>(
+    filteredTransactions,
+    itemsPerPage,
+    currentPage,
+  )
+
   return (
     <Box width="100%" maxWidth={1248} margin="0 auto" px="1.5rem" pb="2rem">
-      <Box display="flex" justifyContent="space-between" gap="2rem" mt="-5rem">
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        gap="2rem"
+        mt="-5rem"
+        overflow="auto"
+      >
         <SummaryCard
           icon={
             <ArrowCircleUp
@@ -73,13 +107,7 @@ export default function Home() {
         />
       </Box>
 
-      <Box
-        display="flex"
-        justifyContent="flex-end"
-        gap="1rem"
-        mt="4rem"
-        mb="1.5rem"
-      >
+      <Box display="flex" gap="1rem" mt="4rem" mb="1.5rem">
         <TextField
           placeholder="Busque uma transação"
           sx={{
@@ -88,7 +116,7 @@ export default function Home() {
             '& .MuiInputBase-input': {
               color: theme.palette.base[600],
             },
-            maxWidth: '300px',
+            maxWidth: smDown ? '100%' : '300px',
           }}
           fullWidth
           value={search}
@@ -106,10 +134,14 @@ export default function Home() {
         </Typography>
       ) : (
         <Stack spacing="2.5rem" alignItems="center">
-          <TransactionsTable
-            transactions={filteredTransactions || transactions}
+          <TransactionsTable transactions={paginatedTransactions} />
+          <Pagination
+            count={transactionsAmount}
+            page={currentPage}
+            onChange={(e, page) => setCurrentPage(page)}
+            color="primary"
+            shape="rounded"
           />
-          <Pagination count={10} color="primary" shape="rounded" />
         </Stack>
       )}
     </Box>
