@@ -1,5 +1,8 @@
+import { TransactionsContext } from '@/contexts/TransactionsContext'
 import { currencyFormatter } from '@/utils/currencyFormatter'
+import { DeleteOutline } from '@mui/icons-material'
 import {
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -9,6 +12,7 @@ import {
   useTheme,
 } from '@mui/material'
 import { format } from 'date-fns'
+import { useContext } from 'react'
 
 interface Transactions {
   id: string
@@ -25,6 +29,7 @@ interface TransactionsTableProps {
 
 export function TransactionsTable({ transactions }: TransactionsTableProps) {
   const theme = useTheme()
+  const { deleteTransaction } = useContext(TransactionsContext)
 
   return (
     <TableContainer>
@@ -123,7 +128,9 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
                 {format(new Date(transaction.createdAt), 'dd/MM/yyyy')}
               </TableCell>
               <TableCell sx={{ color: theme.palette.base[600], border: 0 }}>
-                actions
+                <IconButton onClick={() => deleteTransaction(transaction.id)}>
+                  <DeleteOutline sx={{ color: theme.palette.base[500] }} />
+                </IconButton>
               </TableCell>
             </TableRow>
           ))}

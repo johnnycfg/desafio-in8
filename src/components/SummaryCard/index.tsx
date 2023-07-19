@@ -16,13 +16,13 @@ export function SummaryCard({
   amount,
 }: SummaryCardProps) {
   const theme = useTheme()
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'))
+  const mdDown = useMediaQuery(theme.breakpoints.down('md'))
 
   return (
     <Stack
       spacing="0.75rem"
       width="100%"
-      minWidth={smDown ? '282px' : 'initial'}
+      minWidth={mdDown ? '282px' : 'initial'}
       maxWidth={378}
       bgcolor={
         variant === 'grey'

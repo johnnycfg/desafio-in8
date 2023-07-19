@@ -26,6 +26,7 @@ interface CreateTransactionInputs {
 interface TransactionsContextType {
   transactions: Transactions[]
   createTransaction: (data: CreateTransactionInputs) => void
+  deleteTransaction: (id: string) => void
 }
 
 interface TransactionsProviderProps {
@@ -70,8 +71,21 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     setTransactions((state) => [transaction, ...state])
   }, [])
 
+  const deleteTransaction = useCallback(
+    (id: string) => {
+      const newArray = transactions.filter(
+        (transaction) => transaction.id !== id,
+      )
+
+      setTransactions(newArray)
+    },
+    [transactions],
+  )
+
   return (
-    <TransactionsContext.Provider value={{ transactions, createTransaction }}>
+    <TransactionsContext.Provider
+      value={{ transactions, createTransaction, deleteTransaction }}
+    >
       {children}
     </TransactionsContext.Provider>
   )

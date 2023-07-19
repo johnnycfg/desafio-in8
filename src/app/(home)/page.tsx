@@ -1,6 +1,7 @@
 'use client'
 
 import { SummaryCard } from '@/components/SummaryCard'
+import { TransactionCard } from '@/components/TransactionCard'
 import { TransactionsTable } from '@/components/TransactionsTable'
 import { TransactionsContext } from '@/contexts/TransactionsContext'
 import { useSummary } from '@/hooks/useSummary'
@@ -73,6 +74,7 @@ export default function Home() {
         gap="2rem"
         mt="-5rem"
         overflow="auto"
+        pb="0.5rem"
       >
         <SummaryCard
           icon={
@@ -134,7 +136,15 @@ export default function Home() {
         </Typography>
       ) : (
         <Stack spacing="2.5rem" alignItems="center">
-          <TransactionsTable transactions={paginatedTransactions} />
+          {smDown ? (
+            <Stack spacing="0.75rem" width="100%">
+              {paginatedTransactions.map((transaction) => {
+                return <TransactionCard key={transaction.id} {...transaction} />
+              })}
+            </Stack>
+          ) : (
+            <TransactionsTable transactions={paginatedTransactions} />
+          )}
           <Pagination
             count={transactionsAmount}
             page={currentPage}
